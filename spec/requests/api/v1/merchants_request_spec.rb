@@ -24,7 +24,7 @@ describe "Merchants API" do
     get "/api/v1/merchants/#{id}"
 
     merchant = JSON.parse(response.body, symbolize_names: true)
-
+    # require 'pry'; binding.pry
     expect(response).to be_successful
 
     expect(merchant[:data]).to have_key(:id)
