@@ -9,19 +9,19 @@ Rails.application.routes.draw do
       get '/merchants/:id/items', to: 'merchant_items#index'
     end
   end
-  # namespace :api do
-  #   namespace :v1 do
-  #     resources :merchants, only: [:index, :show] do
-  #       get '/items', to: 'merchant_items#index'
-  #     end
-  #   end
-  # end
 
   namespace :api do
     namespace :v1 do
-      resources :items do
-        get '/merchant', to: 'item_merchant#index'
-      end
+      get '/items', to: 'items#index'
+      get '/items/find_all', to: 'item_search#index'
+      get '/items/new', to: 'items#new'
+      post '/items', to: 'items#create'
+      get '/items/:id', to: 'items#show'
+      get '/items/:id/edit', to: 'items#edit'
+      patch '/items/:id', to: 'items#update'
+      delete '/items/:id', to: 'items#delete'
+
+      get '/items/:id/merchant', to: 'item_merchant#index'
     end
   end
 end
