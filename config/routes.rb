@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-  # get '/api/v1/merchants/find', to: 'merchant_search#index'
   namespace :api do
     namespace :v1 do
       get '/merchants', to: 'merchants#index'
