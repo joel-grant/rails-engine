@@ -154,5 +154,8 @@ RSpec.describe 'Items API' do
     get "/api/v1/items/#{item.id}/merchant"
 
     expect(response).to be_successful
+
+    # Missing some expectations here!
+    
   end
 end
