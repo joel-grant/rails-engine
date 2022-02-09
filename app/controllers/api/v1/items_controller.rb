@@ -28,7 +28,6 @@ class Api::V1::ItemsController < ApplicationController
     else
       render status: 404
     end
-
     # Original Solution
     # if Item.where(id: params[:id]).empty? # Make a method for this
     #   render status: 404
@@ -36,6 +35,10 @@ class Api::V1::ItemsController < ApplicationController
     #   item = Item.update(params[:id], item_params)
     #   render json: ItemSerializer.new(item)
     # end
+  end
+
+  def destroy
+    render json: Item.delete(params[:id])
   end
 
   private
