@@ -122,11 +122,28 @@ RSpec.describe 'Items API' do
     item = create(:item, merchant_id: merchant.id)
     previous_name = item.name
     previous_description = item.description
+    # Edge case to provide a bad merchant id number.
     item_params = ({name: "Pencils", description: "They write things", merchant_id: 99999})
     headers = {"CONTENT_TYPE" => "application/json"}
 
     patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
 
     expect(response.status).to eq(400)
+  end
+
+  it 'can delete an item from the database' do
+    merchant = create(:merchant)
+    item1 = create(:item, merchant_id: merchant.id)
+    item2 = create(:item, name: "Last One Standing", merchant_id: merchant.id)
+
+    expect(Item.count).to eq(2)
+
+    delete "/api/v1/items/#{item1.id}"
+
+    expect(response).to be_successful
+    expect(Item.count).to eq(1)
+    expect(Item.where(id: item1.id)).to eq([])
+    # expect(Item.find(item1.id)).to raise_error(ActiveRecord::RecordNotFound)
+    expect(Item.find(item2.id).name).to eq("Last One Standing")
   end
 end
