@@ -82,4 +82,51 @@ RSpec.describe 'Items API' do
     expect(created_item.unit_price).to eq(item_params[:unit_price])
     expect(created_item.merchant_id).to eq(item_params[:merchant_id])
   end
+
+  it 'can update an existing item' do
+    merchant = create(:merchant)
+    item = create(:item, merchant_id: merchant.id)
+    previous_name = item.name
+    previous_description = item.description
+    item_params = ({name: "Pencils", description: "They write things"})
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
+
+    new_item = Item.find_by(id: item.id)
+
+    expect(response).to be_successful
+
+    expect(new_item.name).to_not eq(previous_name)
+    expect(new_item.description).to_not eq(previous_description)
+
+    expect(new_item.name).to eq("Pencils")
+    expect(new_item.description).to eq("They write things")
+  end
+
+  it 'can prevent the user from updating an id that doesnt exist' do
+    merchant = create(:merchant)
+    item = create(:item, merchant_id: merchant.id)
+    previous_name = item.name
+    previous_description = item.description
+    item_params = ({name: "Pencils", description: "They write things"})
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    patch "/api/v1/items/293847", headers: headers, params: JSON.generate(item: item_params)
+
+    expect(response.status).to eq(404)
+  end
+
+  it 'can validate whether or not the merchant id that is being provided is correct' do
+    merchant = create(:merchant)
+    item = create(:item, merchant_id: merchant.id)
+    previous_name = item.name
+    previous_description = item.description
+    item_params = ({name: "Pencils", description: "They write things", merchant_id: 99999})
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
+
+    expect(response.status).to eq(400)
+  end
 end
