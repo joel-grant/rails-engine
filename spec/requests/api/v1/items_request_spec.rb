@@ -146,4 +146,13 @@ RSpec.describe 'Items API' do
     # expect(Item.find(item1.id)).to raise_error(ActiveRecord::RecordNotFound)
     expect(Item.find(item2.id).name).to eq("Last One Standing")
   end
+
+  it 'can retrieve a merchant based on the item' do
+    merchant = create(:merchant)
+    item = create(:item, merchant_id: merchant.id)
+
+    get "/api/v1/items/#{item.id}/merchant"
+
+    expect(response).to be_successful
+  end
 end
