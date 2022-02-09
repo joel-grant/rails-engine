@@ -28,16 +28,9 @@ class Api::V1::ItemsController < ApplicationController
     else
       render status: 404
     end
-    # Original Solution
-    # if Item.where(id: params[:id]).empty? # Make a method for this
-    #   render status: 404
-    # else
-    #   item = Item.update(params[:id], item_params)
-    #   render json: ItemSerializer.new(item)
-    # end
   end
 
-  def destroy
+  def delete
     render json: Item.delete(params[:id])
   end
 
@@ -46,5 +39,5 @@ class Api::V1::ItemsController < ApplicationController
     def item_params
       params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
     end
-
+    
 end

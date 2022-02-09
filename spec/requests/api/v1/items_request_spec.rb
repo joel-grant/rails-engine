@@ -122,7 +122,7 @@ RSpec.describe 'Items API' do
     item = create(:item, merchant_id: merchant.id)
     previous_name = item.name
     previous_description = item.description
-    # Edge case to provide a bad merchant id number.
+
     item_params = ({name: "Pencils", description: "They write things", merchant_id: 99999})
     headers = {"CONTENT_TYPE" => "application/json"}
 
@@ -156,6 +156,89 @@ RSpec.describe 'Items API' do
     expect(response).to be_successful
 
     # Missing some expectations here!
-    
+
+  end
+
+  it "can retrieve all items that are found in a search by name" do
+    merchant = create(:merchant)
+    item1 = create(:item, merchant_id: merchant.id, name: "Test Item")
+    item2 = create(:item, merchant_id: merchant.id, name: "Case sensitivity test Item")
+    item3 = create(:item, merchant_id: merchant.id, name: "Partial search testing Item")
+    item4 = create(:item, merchant_id: merchant.id, name: "Shouldn't see this in results Item")
+
+    search_term = "Test"
+
+    get "/api/v1/items/find_all?name=#{search_term}"
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(items[:data][0][:attributes][:name]).to include(item2.name)
+    expect(items[:data][1][:attributes][:name]).to include(item3.name)
+    expect(items[:data][2][:attributes][:name]).to include(item1.name)
+  end
+
+  it "can retrieve all items that match a min price search" do
+    merchant = create(:merchant)
+    item1 = create(:item, merchant_id: merchant.id, unit_price: 98.98)
+    item2 = create(:item, merchant_id: merchant.id, unit_price: 50)
+    item3 = create(:item, merchant_id: merchant.id, name: "Al", unit_price: 100.00)
+    item4 = create(:item, merchant_id: merchant.id, name: "Bert", unit_price: 200.00)
+
+    search_price = 100
+
+    get "/api/v1/items/find_all?min_price=#{search_price}"
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to be_successful
+
+    expect(items[:data].count).to eq(2)
+
+    expect(items[:data][0][:id]).to eq(item3.id.to_s)
+    expect(items[:data][1][:id]).to eq(item4.id.to_s)
+  end
+
+  it "can retrieve all items that match a max price search" do
+    merchant = create(:merchant)
+    item1 = create(:item, merchant_id: merchant.id, name: "Andrea", unit_price: 98.98)
+    item2 = create(:item, merchant_id: merchant.id, name: "Betty", unit_price: 50)
+    item3 = create(:item, merchant_id: merchant.id, name: "Al", unit_price: 100.00)
+    item4 = create(:item, merchant_id: merchant.id, name: "Bert", unit_price: 200.00)
+
+    search_price = 100
+
+    get "/api/v1/items/find_all?max_price=#{search_price}"
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to be_successful
+
+    expect(items[:data].count).to eq(3)
+
+    expect(items[:data][0][:id]).to eq(item3.id.to_s)
+    expect(items[:data][1][:id]).to eq(item1.id.to_s)
+    expect(items[:data][2][:id]).to eq(item2.id.to_s)
+  end
+
+  it "can retrieve all items that match a max and min price search" do
+    merchant = create(:merchant)
+    item1 = create(:item, merchant_id: merchant.id, name: "Andrea", unit_price: 98.98)
+    item2 = create(:item, merchant_id: merchant.id, name: "Betty", unit_price: 50)
+    item3 = create(:item, merchant_id: merchant.id, name: "Al", unit_price: 100.00)
+    item4 = create(:item, merchant_id: merchant.id, name: "Bert", unit_price: 200.00)
+
+    min_search_price = 75
+    max_search_price = 125
+
+    get "/api/v1/items/find_all?max_price=#{max_search_price}&min_price=#{min_search_price}"
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to be_successful
+
+    expect(items[:data].count).to eq(2)
+
+    expect(items[:data][0][:id]).to eq(item3.id.to_s)
+    expect(items[:data][1][:id]).to eq(item1.id.to_s)
   end
 end
