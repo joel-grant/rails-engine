@@ -16,4 +16,8 @@ class Item < ApplicationRecord
   def self.search_by_min_and_max_price(min_price, max_price)
     where(unit_price: min_price..max_price).order(:name)
   end
+
+  def self.id_is_valid(id)
+    !where(id: id).empty?
+  end
 end
