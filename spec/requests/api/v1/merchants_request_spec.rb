@@ -57,6 +57,6 @@ describe "Merchants API" do
 
     merchant = JSON.parse(response.body, symbolize_names: true)
 
-    expect(merchant[:data]).to eq(nil)
+    expect(merchant[:data]).to_not be nil 
   end
 end

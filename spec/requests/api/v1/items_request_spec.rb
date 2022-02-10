@@ -91,9 +91,10 @@ RSpec.describe 'Items API' do
     item_params = ({name: "Pencils", description: "They write things"})
     headers = {"CONTENT_TYPE" => "application/json"}
 
-    patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
+    put "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
 
     new_item = Item.find_by(id: item.id)
+    # require 'pry'; binding.pry
 
     expect(response).to be_successful
 
@@ -112,7 +113,7 @@ RSpec.describe 'Items API' do
     item_params = ({name: "Pencils", description: "They write things"})
     headers = {"CONTENT_TYPE" => "application/json"}
 
-    patch "/api/v1/items/293847", headers: headers, params: JSON.generate(item: item_params)
+    put "/api/v1/items/293847", headers: headers, params: JSON.generate(item: item_params)
 
     expect(response.status).to eq(404)
   end
@@ -126,9 +127,9 @@ RSpec.describe 'Items API' do
     item_params = ({name: "Pencils", description: "They write things", merchant_id: 99999})
     headers = {"CONTENT_TYPE" => "application/json"}
 
-    patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
+    put "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
 
-    expect(response.status).to eq(400)
+    expect(response.status).to eq(404)
   end
 
   it 'can delete an item from the database' do
@@ -155,8 +156,9 @@ RSpec.describe 'Items API' do
 
     expect(response).to be_successful
 
-    # Missing some expectations here!
+    result = JSON.parse(response.body, symbolize_names: true)
 
+    expect(result[:data][:attributes][:name]).to eq(merchant.name)
   end
 
   it "can retrieve all items that are found in a search by name" do
