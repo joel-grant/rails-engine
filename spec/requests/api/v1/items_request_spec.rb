@@ -94,7 +94,6 @@ RSpec.describe 'Items API' do
     put "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
 
     new_item = Item.find_by(id: item.id)
-    # require 'pry'; binding.pry
 
     expect(response).to be_successful
 

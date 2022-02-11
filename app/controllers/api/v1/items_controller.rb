@@ -13,28 +13,9 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def update
-    # require 'pry'; binding.pry
-    # if Item.id_is_valid(params[:id])
-    #   require 'pry'; binding.pry
-    #   updated_item = Item.update(params[:id], item_params)
-    #   if updated_item.save
-    #     require 'pry'; binding.pry
-    #     render json: ItemSerializer.new(updated_item), status: :ok
-    #   else
-    #     render status: 404
-    #   end
-    # else
-    #   render status: 404
-    # end
-
-
-
     if Item.id_is_valid(params[:id])
-      if Merchant.id_is_valid(params[:item][:merchant_id]) && params[:item][:merchant_id]
-        item = Item.update(params[:id], item_params)
-        render json: ItemSerializer.new(item), status: :ok
-      elsif !params[:item][:merchant_id]
-        item = Item.update(params[:id], item_params)
+      item = Item.update(params[:id], item_params)
+      if item.save
         render json: ItemSerializer.new(item), status: :ok
       else
         render status: 404
@@ -42,6 +23,19 @@ class Api::V1::ItemsController < ApplicationController
     else
       render status: 404
     end
+    # if Item.id_is_valid(params[:id])
+    #   if Merchant.id_is_valid(params[:item][:merchant_id]) && params[:item][:merchant_id]
+    #     item = Item.update(params[:id], item_params)
+    #     render json: ItemSerializer.new(item), status: :ok
+    #   elsif !params[:item][:merchant_id]
+    #     item = Item.update(params[:id], item_params)
+    #     render json: ItemSerializer.new(item), status: :ok
+    #   else
+    #     render status: 404
+    #   end
+    # else
+    #   render status: 404
+    # end
   end
 
   def delete
