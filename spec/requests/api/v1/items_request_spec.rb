@@ -131,6 +131,21 @@ RSpec.describe 'Items API' do
     expect(response.status).to eq(404)
   end
 
+  it 'will return a custom error message if the id being provided is incorrect' do
+    merchant = create(:merchant)
+    item = create(:item, merchant_id: merchant.id)
+    previous_name = item.name
+    previous_description = item.description
+
+    item_params = ({name: "Pencils", description: "They write things", merchant_id: 99999})
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    put "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate(item: item_params)
+
+    expect(response.status).to eq(404)
+    # Trying to write a test for a custom error message.
+  end
+
   it 'can delete an item from the database' do
     merchant = create(:merchant)
     item1 = create(:item, merchant_id: merchant.id)
