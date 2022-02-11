@@ -13,13 +13,9 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def update
-    if Item.id_is_valid(params[:id])
-      item = Item.update(params[:id], item_params)
-      if item.save
-        render json: ItemSerializer.new(item), status: :ok
-      else
-        render status: 404
-      end
+    item = Item.update(params[:id], item_params)
+    if item.save
+      render json: ItemSerializer.new(item), status: :ok
     else
       render status: 404
     end
