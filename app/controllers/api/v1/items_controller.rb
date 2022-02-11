@@ -23,19 +23,6 @@ class Api::V1::ItemsController < ApplicationController
     else
       render status: 404
     end
-    # if Item.id_is_valid(params[:id])
-    #   if Merchant.id_is_valid(params[:item][:merchant_id]) && params[:item][:merchant_id]
-    #     item = Item.update(params[:id], item_params)
-    #     render json: ItemSerializer.new(item), status: :ok
-    #   elsif !params[:item][:merchant_id]
-    #     item = Item.update(params[:id], item_params)
-    #     render json: ItemSerializer.new(item), status: :ok
-    #   else
-    #     render status: 404
-    #   end
-    # else
-    #   render status: 404
-    # end
   end
 
   def delete
