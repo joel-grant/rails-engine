@@ -1,24 +1,17 @@
-# README
+# Rails Engine
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Welcome to my ```Rails Engine``` Project!
 
-Things you may want to cover:
+This was created as part of a project at Turing and provides 11 fully functioning and tested API endpoint to a mock ecommerce database.
 
-* Ruby version
+### Some of the main technical components
+1.  RoR
+2.  API Creation
+3.  API Testing
+4.  Postman
+5.  ActiveRecord/SQL
+6.  Serializers
+7.  JSON
 
-* System dependencies
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+This project is meant to run on localhost and can be tested by running ```bundle exec rspec``` to review the passing tests for this API.
