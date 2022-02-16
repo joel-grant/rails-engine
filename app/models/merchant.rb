@@ -1,5 +1,9 @@
 class Merchant < ApplicationRecord
   has_many :items
+  has_many :invoice_items, through: :items
+  has_many :invoices, through: :invoice_items
+  has_many :customers, through: :invoices
+  has_many :transactions, through: :invoices
 
   def self.search_merchant(keyword)
     where("Name  ILIKE ?", "%#{keyword}%").order(:name).first
@@ -7,5 +11,14 @@ class Merchant < ApplicationRecord
 
   def self.id_is_valid(id)
     !where(id: id).empty?
+  end
+
+  def self.top_merchants_by_item(merchant_quantity = 5)
+    test = joins(invoices: [:invoice_items, :transactions])
+    .group(:id)
+    .where(transactions: { result: 'success' }, invoices: { status: 'shipped'} )
+    .select("SUM(invoice_items.quantity) as item_quantity, merchants.*")
+    .order(item_quantity: :desc)
+    .limit(5)
   end
 end
