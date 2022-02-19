@@ -14,11 +14,7 @@ class Merchant < ApplicationRecord
   end
 
   def self.top_merchants_by_item(merchant_quantity = 5)
-    test = joins(invoices: [:invoice_items, :transactions])
-    .group(:id)
-    .where(transactions: { result: 'success' }, invoices: { status: 'shipped'} )
-    .select("SUM(invoice_items.quantity) as item_quantity, merchants.*")
-    .order(item_quantity: :desc)
-    .limit(5)
+    test = Merchant.joins(invoices: [:invoice_items, :transactions]).group(:id).where(transactions: { result: 'success' }, invoices: { status: 'shipped'} ).select("SUM(invoice_items.quantity) as item_quantity, merchants.*, item_quantity").order(item_quantity: :desc).limit(merchant_quantity)
+    require 'pry'; binding.pry
   end
 end
