@@ -9,7 +9,7 @@ orbs:
 jobs:
   build: # our first job, named "build"
     docker:
-      - image: cimg/ruby:2.7-node # use a tailored CircleCI docker image.
+      - image: cimg/ruby:2.7.2-node # use a tailored CircleCI docker image.
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
@@ -26,14 +26,14 @@ jobs:
   test:  # our next job, called "test"
     # we run "parallel job containers" to enable speeding up our tests;
     # this splits our tests across multiple containers.
-    parallelism: 3
+    parallelism: 1
     # here we set TWO docker images.
     docker:
-      - image: cimg/ruby:2.7-node # this is our primary docker image, where step commands run.
+      - image: cimg/ruby:2.7.2-node # this is our primary docker image, where step commands run.
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-      - image: cimg/postgres:14.0
+      - image: cimg/postgres:14.1
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
@@ -63,7 +63,9 @@ jobs:
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: Database setup
-          command: bundle exec rails db:schema:load --trace
+          command: |
+            bundle exec rake db:create
+            bundle exec rake db:schema:load --trace
       # Run rspec in parallel
       - ruby/rspec-test
 
@@ -73,6 +75,10 @@ workflows:
   build_and_test:     # The name of our workflow is "build_and_test"
     jobs:             # The list of jobs we run as part of this workflow.
       - build         # Run build first.
-      - test:         # Then run test,
+      - test:
+        -run:
+          name: rspec tests
+          command: bundle exec rspec
+          # Then run test,
           requires:   # Test requires that build passes for it to run.
             - build   # Finally, run the build job.
