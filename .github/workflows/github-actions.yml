@@ -1,16 +1,19 @@
-name: GitHub Actions Demo
-on: [push]
+name: Rails Engine Actions
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 jobs:
-  rails-engine-actions:
-tests:
-    name: Tests
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:11
-        env:
-          POSTGRES_USER: myapp
-          POSTGRES_DB: myapp_test
-          POSTGRES_PASSWORD: ""
-        ports: ["5432:5432"]
- 
+  tests:
+      name: Tests
+      runs-on: ubuntu-latest
+      services:
+        postgres:
+          image: postgres:11
+          env:
+            POSTGRES_USER: myapp
+            POSTGRES_DB: myapp_test
+            POSTGRES_PASSWORD: ""
+          ports: ["5432:5432"]
+
